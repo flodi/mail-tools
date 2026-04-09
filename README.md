@@ -343,3 +343,20 @@ ssh user@yourserver "cd /var/www/mail && source venv/bin/activate && python3 bac
 ## License
 
 MIT
+
+---
+
+## Keyboard Maestro Macros
+
+Import `keyboard-maestro/Mail.kmmacros` into Keyboard Maestro. It contains 4 macros scoped to Apple Mail:
+
+| Macro | Shortcut | Description |
+|-------|----------|-------------|
+| Per Dopo | `⇧⌃⌥⌘D` | Move to "Save for Later" folder |
+| Postponi | `⇧⌃⌥⌘P` | Snooze with date menu + native date picker |
+| Archivia per Claude | `⇧⌃⌥⌘A` | Archive to S3 + index in MySQL + embeddings |
+| Archivia locale | `Return` | Archive in Apple Mail (smart: only when a message is selected) |
+
+After importing, replace `mail.srvc.es` in the Postponi and Archivia per Claude macros with your own server URL.
+
+See `keyboard-maestro/README.md` for full details.

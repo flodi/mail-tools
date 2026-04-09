@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Activate</key>
+		<string>Normal</string>
+		<key>CreationDate</key>
+		<real>796837276.530334</real>
+		<key>Macros</key>
+		<array>
+			<dict>
+				<key>Actions</key>
+				<array>
+					<dict>
+						<key>ActionUID</key>
+						<integer>13971</integer>
+						<key>DisplayKind</key>
+						<string>None</string>
+						<key>HonourFailureSettings</key>
+						<true/>
+						<key>IncludeStdErr</key>
+						<false/>
+						<key>IncludedVariables</key>
+						<array>
+							<string>9999</string>
+						</array>
+						<key>MacroActionType</key>
+						<string>ExecuteAppleScript</string>
+						<key>Path</key>
+						<string></string>
+						<key>Text</key>
+						<string>tell application "Mail"	set msgs to selection	if msgs is {} then return	repeat with msg in msgs		set accName to name of account of mailbox of msg		set msgSource to source of msg		set tmpFile to "/tmp/mail_archive_" &amp; ((random number from 10000 to 99999) as string) &amp; ".eml"		set fileRef to open for access POSIX file tmpFile with write permission		set eof of fileRef to 0		write msgSource to fileRef		close access fileRef		do shell script "curl -s -X POST https://mail.srvc.es/archive -F 'account=" &amp; accName &amp; "' -F 'eml=@" &amp; tmpFile &amp; "' &gt; /dev/null 2&gt;&amp;1 &amp;&amp; rm " &amp; quoted form of tmpFile &amp; " &amp;"	end repeatend tell</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+						<key>TrimResults</key>
+						<true/>
+						<key>TrimResultsNew</key>
+						<true/>
+						<key>UseText</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>ActionUID</key>
+						<integer>14362</integer>
+						<key>MacroActionType</key>
+						<string>Notification</string>
+						<key>SoundName</key>
+						<string></string>
+						<key>Subtitle</key>
+						<string></string>
+						<key>Text</key>
+						<string>Archivio effettuato</string>
+						<key>Title</key>
+						<string>%ExecutingMacro%</string>
+					</dict>
+				</array>
+				<key>CreationDate</key>
+				<real>797359946.22727096</real>
+				<key>ModificationDate</key>
+				<real>797420160.09805906</real>
+				<key>Name</key>
+				<string>Archivia per Claude</string>
+				<key>Triggers</key>
+				<array>
+					<dict>
+						<key>FireType</key>
+						<string>Pressed</string>
+						<key>KeyCode</key>
+						<integer>0</integer>
+						<key>MacroTriggerType</key>
+						<string>HotKey</string>
+						<key>Modifiers</key>
+						<integer>6912</integer>
+					</dict>
+				</array>
+				<key>UID</key>
+				<string>3200F4CE-E13F-43C7-AF44-05637BE07C3C</string>
+			</dict>
+		</array>
+		<key>Name</key>
+		<string>Mail</string>
+		<key>Targeting</key>
+		<dict>
+			<key>Targeting</key>
+			<string>Included</string>
+			<key>TargetingApps</key>
+			<array>
+				<dict>
+					<key>BundleIdentifier</key>
+					<string>com.apple.mail</string>
+					<key>Name</key>
+					<string>Mail</string>
+					<key>NewFile</key>
+					<string>/System/Applications/Mail.app</string>
+				</dict>
+			</array>
+		</dict>
+		<key>ToggleMacroUID</key>
+		<string>9F545E7E-AC36-4273-8395-762CD9992935</string>
+		<key>UID</key>
+		<string>7C7E9CB2-CAA1-4E2B-9919-621E38418248</string>
+	</dict>
+	<dict>
+		<key>Activate</key>
+		<string>Normal</string>
+		<key>CreationDate</key>
+		<real>796837276.530334</real>
+		<key>Macros</key>
+		<array>
+			<dict>
+				<key>Actions</key>
+				<array>
+					<dict>
+						<key>ActionUID</key>
+						<integer>13191</integer>
+						<key>Conditions</key>
+						<dict>
+							<key>ConditionList</key>
+							<array>
+								<dict>
+									<key>ConditionType</key>
+									<string>Menu</string>
+									<key>MenuConditionSelectionType</key>
+									<string>Is</string>
+									<key>MenuConditionType</key>
+									<string>IsEnabled</string>
+									<key>MenuModifiers</key>
+									<integer>256</integer>
+									<key>MenuShortcut</key>
+									<string>C</string>
+									<key>MenuTitle</key>
+									<string>Archivia</string>
+								</dict>
+							</array>
+							<key>ConditionListMatch</key>
+							<string>All</string>
+						</dict>
+						<key>ElseActions</key>
+						<array>
+							<dict>
+								<key>ActionUID</key>
+								<integer>13581</integer>
+								<key>KeyCode</key>
+								<integer>36</integer>
+								<key>MacroActionType</key>
+								<string>SimulateKeystroke</string>
+								<key>Modifiers</key>
+								<integer>0</integer>
+								<key>ReleaseAll</key>
+								<false/>
+								<key>TargetApplication</key>
+								<dict/>
+								<key>TargetingType</key>
+								<string>Front</string>
+							</dict>
+						</array>
+						<key>MacroActionType</key>
+						<string>IfThenElse</string>
+						<key>ThenActions</key>
+						<array>
+							<dict>
+								<key>ActionUID</key>
+								<integer>12800</integer>
+								<key>MacroActionType</key>
+								<string>SelectMenuItem</string>
+								<key>Menu</key>
+								<array>
+									<string>Messaggio</string>
+									<string>Archivia</string>
+								</array>
+								<key>TargetApplication</key>
+								<dict>
+									<key>BundleIdentifier</key>
+									<string>com.apple.mail</string>
+									<key>Name</key>
+									<string>Mail</string>
+									<key>NewFile</key>
+									<string>/System/Applications/Mail.app</string>
+								</dict>
+								<key>TargetingType</key>
+								<string>Specific</string>
+							</dict>
+						</array>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+					</dict>
+				</array>
+				<key>CreationDate</key>
+				<real>797161213.83963001</real>
+				<key>ModificationDate</key>
+				<real>797420106.33852005</real>
+				<key>Name</key>
+				<string>Archivia locale</string>
+				<key>Triggers</key>
+				<array>
+					<dict>
+						<key>FireType</key>
+						<string>Pressed</string>
+						<key>KeyCode</key>
+						<integer>36</integer>
+						<key>MacroTriggerType</key>
+						<string>HotKey</string>
+						<key>Modifiers</key>
+						<integer>0</integer>
+					</dict>
+				</array>
+				<key>UID</key>
+				<string>CC9455AD-BB89-419C-AF2A-5D68E359AFD7</string>
+			</dict>
+		</array>
+		<key>Name</key>
+		<string>Mail</string>
+		<key>Targeting</key>
+		<dict>
+			<key>Targeting</key>
+			<string>Included</string>
+			<key>TargetingApps</key>
+			<array>
+				<dict>
+					<key>BundleIdentifier</key>
+					<string>com.apple.mail</string>
+					<key>Name</key>
+					<string>Mail</string>
+					<key>NewFile</key>
+					<string>/System/Applications/Mail.app</string>
+				</dict>
+			</array>
+		</dict>
+		<key>ToggleMacroUID</key>
+		<string>9F545E7E-AC36-4273-8395-762CD9992935</string>
+		<key>UID</key>
+		<string>7C7E9CB2-CAA1-4E2B-9919-621E38418248</string>
+	</dict>
+	<dict>
+		<key>Activate</key>
+		<string>Normal</string>
+		<key>CreationDate</key>
+		<real>796837276.530334</real>
+		<key>Macros</key>
+		<array>
+			<dict>
+				<key>Actions</key>
+				<array>
+					<dict>
+						<key>ActionUID</key>
+						<integer>12409</integer>
+						<key>DisplayKind</key>
+						<string>None</string>
+						<key>HonourFailureSettings</key>
+						<true/>
+						<key>IncludeStdErr</key>
+						<false/>
+						<key>IncludedVariables</key>
+						<array>
+							<string>9999</string>
+						</array>
+						<key>MacroActionType</key>
+						<string>ExecuteAppleScript</string>
+						<key>Path</key>
+						<string></string>
+						<key>Text</key>
+						<string>tell application "Mail"	set msgs to selection	if msgs is {} then return	set msg to item 1 of msgs	set msgID to message id of msg	set msgAccount to email addresses of account of mailbox of msg	set msgAccount to item 1 of msgAccountend tellset opzioni to {"Domani mattina (8:00)", "Stasera (19:00)", "Weekend (sabato 8:00)", "Settimana prossima (lunedì 8:00)", "Data personalizzata..."}set scelta to choose from list opzioni with prompt "Quando vuoi ricevere questo messaggio?" default items {"Domani mattina (8:00)"}if scelta is false then returnset scelta to item 1 of sceltaset oggi to current dateset target to oggiif scelta is "Domani mattina (8:00)" then	set target to oggi + (1 * days)	set time of target to 8 * hourselse if scelta is "Stasera (19:00)" then	set time of target to 19 * hourselse if scelta is "Weekend (sabato 8:00)" then	set time of target to 8 * hours	repeat until weekday of target is Saturday		set target to target + (1 * days)	end repeatelse if scelta is "Settimana prossima (lunedì 8:00)" then	set time of target to 8 * hours	repeat until weekday of target is Monday		set target to target + (1 * days)	end repeat	if weekday of oggi is Monday then set target to target + (7 * days)else if scelta is "Data personalizzata..." then	set dataStr to do shell script "~/.local/bin/datepicker"	if dataStr is "" then return	set targetDT to dataStr &amp; "T08:00:00"	tell application "Mail"		move msg to mailbox "Postponi" of account of mailbox of msg	end tell	do shell script "curl -s -X POST https://mail.srvc.es/postpone -H 'Content-Type: application/json' -d '{\"message_url\": \"message://%3C" &amp; msgID &amp; "%3E\", \"target_dt\": \"" &amp; targetDT &amp; "\", \"account\": \"" &amp; msgAccount &amp; "\"}' &gt; /tmp/postponi_curl.log 2&gt;&amp;1 &amp;"	returnend ifset y to year of target as stringset m to text -2 thru -1 of ("0" &amp; ((month of target as integer) as string))set d to text -2 thru -1 of ("0" &amp; (day of target as string))set h to text -2 thru -1 of ("0" &amp; (((time of target) div hours) as string))set targetDT to y &amp; "-" &amp; m &amp; "-" &amp; d &amp; "T" &amp; h &amp; ":00:00"tell application "Mail"	move msg to mailbox "Postponi" of account of mailbox of msgend telldo shell script "curl -s -X POST https://mail.srvc.es/postpone -H 'Content-Type: application/json' -d '{\"message_url\": \"message://%3C" &amp; msgID &amp; "%3E\", \"target_dt\": \"" &amp; targetDT &amp; "\", \"account\": \"" &amp; msgAccount &amp; "\"}' &gt; /tmp/postponi_curl.log 2&gt;&amp;1 &amp;"</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+						<key>TrimResults</key>
+						<true/>
+						<key>TrimResultsNew</key>
+						<true/>
+						<key>UseText</key>
+						<true/>
+					</dict>
+				</array>
+				<key>CreationDate</key>
+				<real>797155865.03286505</real>
+				<key>ModificationDate</key>
+				<real>797371689.61193001</real>
+				<key>Name</key>
+				<string>Postponi</string>
+				<key>Triggers</key>
+				<array>
+					<dict>
+						<key>FireType</key>
+						<string>Pressed</string>
+						<key>KeyCode</key>
+						<integer>35</integer>
+						<key>MacroTriggerType</key>
+						<string>HotKey</string>
+						<key>Modifiers</key>
+						<integer>6912</integer>
+					</dict>
+				</array>
+				<key>UID</key>
+				<string>25E1A430-3FBE-44E4-93A3-4F6C0CF29A42</string>
+			</dict>
+		</array>
+		<key>Name</key>
+		<string>Mail</string>
+		<key>Targeting</key>
+		<dict>
+			<key>Targeting</key>
+			<string>Included</string>
+			<key>TargetingApps</key>
+			<array>
+				<dict>
+					<key>BundleIdentifier</key>
+					<string>com.apple.mail</string>
+					<key>Name</key>
+					<string>Mail</string>
+					<key>NewFile</key>
+					<string>/System/Applications/Mail.app</string>
+				</dict>
+			</array>
+		</dict>
+		<key>ToggleMacroUID</key>
+		<string>9F545E7E-AC36-4273-8395-762CD9992935</string>
+		<key>UID</key>
+		<string>7C7E9CB2-CAA1-4E2B-9919-621E38418248</string>
+	</dict>
+	<dict>
+		<key>Activate</key>
+		<string>Normal</string>
+		<key>CreationDate</key>
+		<real>796837276.530334</real>
+		<key>Macros</key>
+		<array>
+			<dict>
+				<key>Actions</key>
+				<array>
+					<dict>
+						<key>ActionUID</key>
+						<integer>11628</integer>
+						<key>DisplayKind</key>
+						<string>None</string>
+						<key>HonourFailureSettings</key>
+						<true/>
+						<key>IncludeStdErr</key>
+						<false/>
+						<key>IncludedVariables</key>
+						<array>
+							<string>9999</string>
+						</array>
+						<key>MacroActionType</key>
+						<string>ExecuteAppleScript</string>
+						<key>Path</key>
+						<string></string>
+						<key>Text</key>
+						<string>tell application "Mail"
+    set msgs to selection
+    if msgs is {} then return
+    
+    repeat with msg in msgs
+        set msgAccount to account of mailbox of msg
+        set targetMailbox to mailbox "Per Dopo" of msgAccount
+        move msg to targetMailbox
+    end repeat
+end tell</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+						<key>TrimResults</key>
+						<true/>
+						<key>TrimResultsNew</key>
+						<true/>
+						<key>UseText</key>
+						<true/>
+					</dict>
+				</array>
+				<key>CreationDate</key>
+				<real>796837290.36364996</real>
+				<key>ModificationDate</key>
+				<real>797160350.02969801</real>
+				<key>Name</key>
+				<string>Per Dopo</string>
+				<key>Triggers</key>
+				<array>
+					<dict>
+						<key>FireType</key>
+						<string>Pressed</string>
+						<key>KeyCode</key>
+						<integer>2</integer>
+						<key>MacroTriggerType</key>
+						<string>HotKey</string>
+						<key>Modifiers</key>
+						<integer>6912</integer>
+					</dict>
+				</array>
+				<key>UID</key>
+				<string>1FC3BA5D-D6FE-4933-9875-27481DBD4E63</string>
+			</dict>
+		</array>
+		<key>Name</key>
+		<string>Mail</string>
+		<key>Targeting</key>
+		<dict>
+			<key>Targeting</key>
+			<string>Included</string>
+			<key>TargetingApps</key>
+			<array>
+				<dict>
+					<key>BundleIdentifier</key>
+					<string>com.apple.mail</string>
+					<key>Name</key>
+					<string>Mail</string>
+					<key>NewFile</key>
+					<string>/System/Applications/Mail.app</string>
+				</dict>
+			</array>
+		</dict>
+		<key>ToggleMacroUID</key>
+		<string>9F545E7E-AC36-4273-8395-762CD9992935</string>
+		<key>UID</key>
+		<string>7C7E9CB2-CAA1-4E2B-9919-621E38418248</string>
+	</dict>
+</array>
+</plist>
