@@ -171,9 +171,10 @@ ACCOUNT_MAP = {
     'fabrizio.lodi@retrocampus.it': 'io@fabriziolodi.com',
     'f.lodi@bluecube.it':           'f.lodi@bluecube.it',
     'flodi@tecnoscientia.com':      'flodi@tecnoscientia.com',
-    'flodi@k-results.com':          'flodi@tecnoscientia.com',
+    'flodi@k-results.com':          'flodi@k-results.com',
     'Personale':                    'io@fabriziolodi.com',
     'Bluecube':                     'f.lodi@bluecube.it',
     'Tecnoscientia':                'flodi@tecnoscientia.com',
+    'K-Results':                    'flodi@k-results.com',
     'Alascom':                      'io@fabriziolodi.com',
 }

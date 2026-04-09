@@ -14,7 +14,8 @@ ACCOUNT_MAP = {
     'fabrizio.lodi@retrocampus.it': ('fastmail', 'io@fabriziolodi.com'),
     'f.lodi@bluecube.it':           ('gmail',    'f.lodi@bluecube.it'),
     'flodi@tecnoscientia.com':      ('office365', 'flodi@tecnoscientia.com'),
-    'flodi@k-results.com':          ('office365', 'flodi@tecnoscientia.com'),
+    'flodi@k-results.com':          ('office365', 'flodi@k-results.com'),
+    'K-Results':                    ('office365', 'flodi@k-results.com'),
 }
 
 def get_db():

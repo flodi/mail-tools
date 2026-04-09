@@ -2,9 +2,9 @@ import imaplib
 import json
 import msal
 
-def get_o365_token():
+def get_o365_token(config_key='office365'):
     with open('/var/www/postpone/config.json') as f:
-        cfg = json.load(f)['office365']
+        cfg = json.load(f)[config_key]
     
     app = msal.PublicClientApplication(
         cfg['client_id'],
@@ -22,7 +22,8 @@ def get_o365_token():
     return result['access_token']
 
 def get_o365_imap(email):
-    token = get_o365_token()
+    config_key = 'office365_kresults' if 'k-results' in email else 'office365'
+    token = get_o365_token(config_key)
     auth_string = f"user={email}\x01auth=Bearer {token}\x01\x01"
     imap = imaplib.IMAP4_SSL('outlook.office365.com')
     imap.authenticate('XOAUTH2', lambda x: auth_string)
