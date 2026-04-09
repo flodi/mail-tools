@@ -1,0 +1,10 @@
+# Credentials - NEVER commit these
+config.json
+*.pem
+*.key
+*credentials*.json
+o365_token.json
+google_credentials.json
+__pycache__/
+*.pyc
+.env

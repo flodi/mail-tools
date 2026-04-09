@@ -1,0 +1,30 @@
+{
+    "fastmail": {
+        "email": "you@fastmail.com",
+        "app_password": "YOUR_APP_PASSWORD"
+    },
+    "gmail": {
+        "client_id": "YOUR_GOOGLE_CLIENT_ID",
+        "client_secret": "YOUR_GOOGLE_CLIENT_SECRET",
+        "refresh_token": "YOUR_REFRESH_TOKEN"
+    },
+    "office365": {
+        "client_id": "YOUR_AZURE_CLIENT_ID",
+        "client_secret": "YOUR_AZURE_CLIENT_SECRET",
+        "tenant_id": "YOUR_TENANT_ID",
+        "refresh_token": "YOUR_REFRESH_TOKEN"
+    },
+    "mysql": {
+        "host": "localhost",
+        "user": "mailarchive",
+        "password": "YOUR_PASSWORD",
+        "database": "mailarchive"
+    },
+    "s3": {
+        "bucket": "your-mail-archive-bucket",
+        "region": "eu-west-1"
+    },
+    "voyage": {
+        "api_key": "YOUR_VOYAGE_API_KEY"
+    }
+}

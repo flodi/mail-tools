@@ -1,0 +1,63 @@
+# Mail Archive - Fabrizio Lodi
+
+## REGOLA FONDAMENTALE
+**Usa SEMPRE le API REST per interrogare l'archivio. NON aprire mai tunnel SSH o connetterti direttamente a MySQL.**
+
+## API REST (https://mail.srvc.es)
+
+### Statistiche
+```bash
+curl -s https://mail.srvc.es/archive/stats
+```
+Risposta: `{"total": N, "accounts": N, "by_account": [{"account": "...", "count": N}]}`
+
+### Ricerca
+```bash
+# Per testo (full-text su subject e body)
+curl -s "https://mail.srvc.es/archive/search?q=termine"
+
+# Per account
+curl -s "https://mail.srvc.es/archive/search?account=alascom"
+
+# Per mittente
+curl -s "https://mail.srvc.es/archive/search?from_addr=mario@esempio.com"
+
+# Combinazioni
+curl -s "https://mail.srvc.es/archive/search?account=alascom&q=fattura&limit=50"
+```
+
+### Archivia mail
+```bash
+curl -X POST https://mail.srvc.es/archive \
+  -F "account=io@fabriziolodi.com" \
+  -F "eml=@/path/to/mail.eml"
+```
+
+### Posticipa mail
+```bash
+curl -X POST https://mail.srvc.es/postpone \
+  -H "Content-Type: application/json" \
+  -d '{"message_url": "message://...", "target_dt": "2026-04-10T08:00:00", "account": "io@fabriziolodi.com"}'
+```
+
+## Infrastruttura (solo per emergenze)
+
+### VPS
+- Host: srvc.es
+- SSH: `ssh -i ~/.ssh/flodi_at_e.scientia.eu root@srvc.es`
+
+### Account email
+- io@fabriziolodi.com (Fastmail) — alias: fabrizio.lodi@alascom.it, fabrizio.lodi@mauden.com, fabrizio.lodi@retrocampus.it
+- f.lodi@bluecube.it (Gmail/Google Workspace)
+- flodi@tecnoscientia.com (Office 365) — alias: flodi@k-results.com
+
+### S3
+- Bucket: mail-archive-fabriziolodi
+- Struttura: `{account}/{anno}/{mese}/{message_id}/message.eml` + `attachments/`
+
+### Ricerca semantica (linguaggio naturale)
+```bash
+curl -s "https://mail.srvc.es/archive/semantic-search?q=come+eravamo+rimasti+col+consorzio+del+prosciutto"
+curl -s "https://mail.srvc.es/archive/semantic-search?q=cosa+dovevo+fare+per+la+riunione"
+```
+Restituisce le mail più simili semanticamente alla domanda, ordinate per rilevanza.
