@@ -1,18 +1,21 @@
 -- Archive - Save selected emails to the mail archive
--- Configure API_BASE to your server URL
-property API_BASE : "https://mail.yourdomain.com"
+-- Requires: ~/.local/bin/mail_archive.py (installed by setup.sh)
+-- Mail is released immediately after collecting message IDs
 
+set msgDataList to {}
 tell application "Mail"
     set msgs to selection
     if msgs is {} then return
     repeat with msg in msgs
+        set msgNum to id of msg
         set accName to name of account of mailbox of msg
-        set msgSource to source of msg
-        set tmpFile to "/tmp/mail_archive_" & ((random number from 10000 to 99999) as string) & ".eml"
-        set fileRef to open for access POSIX file tmpFile with write permission
-        set eof of fileRef to 0
-        write msgSource to fileRef
-        close access fileRef
-        do shell script "curl -s -X POST " & API_BASE & "/archive -F 'account=" & accName & "' -F 'eml=@" & tmpFile & "' > /dev/null 2>&1 && rm " & quoted form of tmpFile & " &"
+        set end of msgDataList to {theNum: msgNum, theAccount: accName}
     end repeat
 end tell
+
+-- Mail is free from here
+repeat with msgData in msgDataList
+    set msgNum to theNum of msgData as string
+    set accName to theAccount of msgData
+    do shell script "nohup python3 ~/.local/bin/mail_archive.py " & quoted form of msgNum & " " & quoted form of accName & " > /dev/null 2>&1 &"
+end repeat

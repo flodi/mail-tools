@@ -99,3 +99,10 @@ fi
 echo ""
 echo "=== Setup completato ==="
 echo "Per iniziare: cd ~/mail && claude"
+
+# 8. mail_archive.py
+mkdir -p ~/.local/bin
+SCRIPT_DIR2="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cp "$SCRIPT_DIR2/mac/mail_archive.py" ~/.local/bin/mail_archive.py
+chmod +x ~/.local/bin/mail_archive.py
+echo "✓ mail_archive.py installato"
