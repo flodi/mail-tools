@@ -1,21 +1,12 @@
 #!/bin/bash
 set -e
 
-echo "=== Setup Mail Archive ==="
+echo "=== Setup Mail Tools ==="
 
-# 1. Crea cartella progetto
-mkdir -p ~/mail/.claude/commands
-echo "✓ Cartella ~/mail creata"
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+mkdir -p ~/.local/bin
 
-# 2. Copia i file del progetto (se non esistono già)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ "$SCRIPT_DIR" != "$HOME/mail" ]; then
-    cp -n "$SCRIPT_DIR/CLAUDE.md" ~/mail/CLAUDE.md 2>/dev/null || true
-    cp -rn "$SCRIPT_DIR/.claude/" ~/mail/.claude/ 2>/dev/null || true
-    echo "✓ File progetto copiati"
-fi
-
-# 3. Chiave SSH
+# 1. Chiave SSH
 SSH_KEY="$HOME/.ssh/flodi_at_e.scientia.eu"
 if [ ! -f "$SSH_KEY" ]; then
     echo ""
@@ -28,7 +19,7 @@ else
     echo "✓ Chiave SSH presente"
 fi
 
-# 4. AWS CLI
+# 2. AWS CLI
 if ! command -v aws &>/dev/null; then
     echo "→ Installo AWS CLI..."
     brew install awscli
@@ -36,7 +27,7 @@ else
     echo "✓ AWS CLI presente"
 fi
 
-# 5. Credenziali AWS
+# 3. Credenziali AWS
 if [ ! -f ~/.aws/credentials ]; then
     echo ""
     echo "⚠️  Credenziali AWS non trovate."
@@ -46,45 +37,31 @@ else
     echo "✓ Credenziali AWS presenti"
 fi
 
-# 6. Datepicker Swift
+# 4. Datepicker Swift (usato da Postponi → "Data personalizzata...")
 DATEPICKER="$HOME/.local/bin/datepicker"
 if [ ! -f "$DATEPICKER" ]; then
     echo "→ Compilo datepicker..."
-    mkdir -p ~/.local/bin
-    cat > /tmp/datepicker.swift << 'SWIFT'
-import AppKit
-class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        let datePicker = NSDatePicker()
-        datePicker.datePickerStyle = .clockAndCalendar
-        datePicker.datePickerElements = .yearMonthDay
-        datePicker.dateValue = Date()
-        datePicker.sizeToFit()
-        let alert = NSAlert()
-        alert.messageText = "Scegli una data"
-        alert.addButton(withTitle: "OK")
-        alert.addButton(withTitle: "Annulla")
-        alert.accessoryView = datePicker
-        NSApp.activate(ignoringOtherApps: true)
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            print(formatter.string(from: datePicker.dateValue))
-        }
-        NSApp.terminate(nil)
-    }
-}
-let app = NSApplication.shared
-let delegate = AppDelegate()
-app.delegate = delegate
-app.setActivationPolicy(.accessory)
-app.run()
-SWIFT
-    swiftc -o "$DATEPICKER" /tmp/datepicker.swift -framework AppKit && rm /tmp/datepicker.swift
+    swiftc -o "$DATEPICKER" "$REPO/mac/datepicker.swift" -framework AppKit
     echo "✓ Datepicker compilato"
 else
     echo "✓ Datepicker presente"
+fi
+
+# 5. Script locali
+for f in mail_sync.py mail_archive.py emlx_to_eml.py; do
+    cp "$REPO/mac/$f" ~/.local/bin/$f
+    chmod +x ~/.local/bin/$f
+    echo "✓ $f installato"
+done
+
+# 6. LaunchAgent di sincronizzazione archivio (ogni 10 minuti)
+AGENT=com.fabriziolodi.mail-sync
+cp "$REPO/mac/$AGENT.plist" ~/Library/LaunchAgents/$AGENT.plist
+if launchctl list | grep -q "$AGENT"; then
+    echo "✓ LaunchAgent $AGENT già caricato"
+else
+    launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/$AGENT.plist
+    echo "✓ LaunchAgent $AGENT caricato"
 fi
 
 # 7. Verifica connessione VPS
@@ -98,11 +75,5 @@ fi
 
 echo ""
 echo "=== Setup completato ==="
-echo "Per iniziare: cd ~/mail && claude"
-
-# 8. mail_archive.py
-mkdir -p ~/.local/bin
-SCRIPT_DIR2="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cp "$SCRIPT_DIR2/mac/mail_archive.py" ~/.local/bin/mail_archive.py
-chmod +x ~/.local/bin/mail_archive.py
-echo "✓ mail_archive.py installato"
+echo "Macro: doppio clic su keyboard-maestro/Mail.kmmacros"
+echo "Per iniziare: cd \"$REPO\" && claude"

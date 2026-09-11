@@ -267,24 +267,14 @@ Edit `ACCOUNT_MAP` in `vps/processor.py` and `vps/archive_mail.py` to match your
 
 ### Per Dopo macro
 
-Create folders named `Per Dopo` on each IMAP account, then create a Smart Mailbox aggregating them. Add a Keyboard Maestro macro with this AppleScript:
-
-```applescript
-tell application "Mail"
-    set msgs to selection
-    if msgs is {} then return
-    repeat with msg in msgs
-        set acc to account of mailbox of msg
-        move msg to mailbox "Per Dopo" of acc
-    end repeat
-end tell
-```
+Create folders named `Per Dopo` on each IMAP account, then create a Smart Mailbox aggregating them.
+See `apple-mail/per_dopo.applescript`. Gmail accounts are moved server-side through `POST /gmail/move`.
 
 ### Postponi macro
 
 See `apple-mail/postponi.applescript`. Requires:
 - The native macOS date picker binary (compile from `mac/datepicker.swift`)
-- Your API base URL configured
+- Your API base URL and your Mail.app account → email address mapping configured in the script
 
 Build the date picker:
 ```bash
@@ -292,19 +282,21 @@ mkdir -p ~/.local/bin
 swiftc -o ~/.local/bin/datepicker mac/datepicker.swift -framework AppKit
 ```
 
-### Archive macro
+### Archive (background sync)
 
-See `apple-mail/archive.applescript`. Exports selected emails as .eml and sends them to the API.
+Archiving no longer uses a macro. `mac/mail_sync.py` runs every 10 minutes as a LaunchAgent
+(`mac/com.fabriziolodi.mail-sync.plist`): it reads Apple Mail's Envelope Index, asks `POST /archive/check`
+which messages in the Archive mailboxes are missing, and uploads their `.eml` to `POST /archive`.
+Edit `UUID_TO_ACCOUNT` in the script to match your Mail.app accounts.
 
 ---
 
 ## Claude Code Integration
 
-Copy the `claude-code/` folder to `~/mail/` on your Mac:
+The repository itself is the Claude Code project: `CLAUDE.md` and `.claude/commands/` live at the root.
 
 ```bash
-cp -r claude-code/ ~/mail/
-cd ~/mail
+cd mail-tools
 claude
 ```
 
@@ -348,15 +340,17 @@ MIT
 
 ## Keyboard Maestro Macros
 
-Import `keyboard-maestro/Mail.kmmacros` into Keyboard Maestro. It contains 4 macros scoped to Apple Mail:
+Import `keyboard-maestro/Mail.kmmacros` into Keyboard Maestro. It contains 5 macros scoped to Apple Mail:
 
 | Macro | Shortcut | Description |
 |-------|----------|-------------|
 | Per Dopo | `⇧⌃⌥⌘D` | Move to "Save for Later" folder |
 | Postponi | `⇧⌃⌥⌘P` | Snooze with date menu + native date picker |
-| Archivia per Claude | `⇧⌃⌥⌘A` | Archive to S3 + index in MySQL + embeddings |
-| Archivia locale | `Return` | Archive in Apple Mail (smart: only when a message is selected) |
+| Quick Add To Todoist | `⇧⌃⌥⌘T` | Open Todoist Quick Add with subject + `message://` link |
+| Archivia | `⌘↩` | Message → Archive menu item |
+| Auto read | every 60 s | Mark as read the unread messages in Junk, Trash and Archive |
 
-After importing, replace `mail.srvc.es` in the Postponi and Archivia per Claude macros with your own server URL.
+After importing, replace `mail.srvc.es` in the Per Dopo and Postponi macros with your own server URL.
+To refresh the exported files after editing the macros in Keyboard Maestro, run `python3 keyboard-maestro/export.py`.
 
 See `keyboard-maestro/README.md` for full details.

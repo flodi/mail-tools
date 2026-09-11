@@ -1,14 +1,30 @@
--- Postponi - Snooze emails in Apple Mail
--- Configure API_BASE to your server URL
-property API_BASE : "https://mail.yourdomain.com"
-
-tell application "Mail"
-    set msgs to selection
-    if msgs is {} then return
-    set msg to item 1 of msgs
-    set msgID to message id of msg
-    set msgAccount to name of account of mailbox of msg
-end tell
+try
+	tell application "Mail"
+		set msgs to selection
+		if msgs is {} then return
+		set msg to item 1 of msgs
+		set acc to account of mailbox of msg
+		set accName to name of acc
+		set msgID to message id of msg
+		
+		if accName is "Personale" then
+			set msgAccount to "io@fabriziolodi.com"
+		else if accName is "Bluecube" then
+			set msgAccount to "f.lodi@bluecube.it"
+		else if accName is "Tecnoscientia" then
+			set msgAccount to "flodi@tecnoscientia.com"
+		else if accName is "K-Results" then
+			set msgAccount to "flodi@k-results.com"
+		else if accName is "Tecnoscientia PEC" then
+			set msgAccount to "tecnoscientia@pec.it"
+		else
+			set msgAccount to accName
+		end if
+	end tell
+on error errMsg
+	display alert "Impossibile leggere il messaggio" message "Riprova selezionando il messaggio. Dettaglio: " & errMsg buttons {"OK"} default button "OK"
+	return
+end try
 
 set opzioni to {"Domani mattina (8:00)", "Stasera (19:00)", "Weekend (sabato 8:00)", "Settimana prossima (lunedì 8:00)", "Data personalizzata..."}
 set scelta to choose from list opzioni with prompt "Quando vuoi ricevere questo messaggio?" default items {"Domani mattina (8:00)"}
@@ -19,30 +35,40 @@ set oggi to current date
 set target to oggi
 
 if scelta is "Domani mattina (8:00)" then
-    set target to oggi + (1 * days)
-    set time of target to 8 * hours
+	set target to oggi + (1 * days)
+	set time of target to 8 * hours
 else if scelta is "Stasera (19:00)" then
-    set time of target to 19 * hours
+	set time of target to 19 * hours
 else if scelta is "Weekend (sabato 8:00)" then
-    set time of target to 8 * hours
-    repeat until weekday of target is Saturday
-        set target to target + (1 * days)
-    end repeat
+	set time of target to 8 * hours
+	repeat until weekday of target is Saturday
+		set target to target + (1 * days)
+	end repeat
 else if scelta is "Settimana prossima (lunedì 8:00)" then
-    set time of target to 8 * hours
-    repeat until weekday of target is Monday
-        set target to target + (1 * days)
-    end repeat
-    if weekday of oggi is Monday then set target to target + (7 * days)
+	set time of target to 8 * hours
+	repeat until weekday of target is Monday
+		set target to target + (1 * days)
+	end repeat
+	if weekday of oggi is Monday then set target to target + (7 * days)
 else if scelta is "Data personalizzata..." then
-    set dataStr to do shell script "~/.local/bin/datepicker"
-    if dataStr is "" then return
-    set targetDT to dataStr & "T08:00:00"
-    tell application "Mail"
-        move msg to mailbox "Postponi" of account of mailbox of msg
-    end tell
-    do shell script "curl -s -X POST " & API_BASE & "/postpone -H 'Content-Type: application/json' -d '{\"message_url\": \"message://%3C" & msgID & "%3E\", \"target_dt\": \"" & targetDT & "\", \"account\": \"" & msgAccount & "\"}' > /tmp/postponi_curl.log 2>&1 &"
-    return
+	set dataStr to do shell script "~/.local/bin/datepicker"
+	if dataStr is "" then return
+	set targetDT to dataStr & "T08:00:00"
+	if accName is "Bluecube" then
+		do shell script "/usr/bin/curl -s -X POST https://mail.srvc.es/gmail/move -H 'Content-Type: application/json' -d '{\"email\": \"f.lodi@bluecube.it\", \"message_id\": \"" & msgID & "\", \"target_folder\": \"Postponi\"}'"
+	else
+		tell application "Mail"
+			try
+				move msg to mailbox "Postponi" of acc
+				check for new mail for acc
+			on error
+				display notification "Cartella Postponi non trovata per questo account" with title "Postponi"
+				return
+			end try
+		end tell
+	end if
+	do shell script "/usr/bin/curl -s -X POST https://mail.srvc.es/postpone -H 'Content-Type: application/json' -d '{\"message_url\": \"message://%3C" & msgID & "%3E\", \"target_dt\": \"" & targetDT & "\", \"account\": \"" & msgAccount & "\"}' > /tmp/postponi_curl.log 2>&1 &"
+	return
 end if
 
 set y to year of target as string
@@ -51,8 +77,18 @@ set d to text -2 thru -1 of ("0" & (day of target as string))
 set h to text -2 thru -1 of ("0" & (((time of target) div hours) as string))
 set targetDT to y & "-" & m & "-" & d & "T" & h & ":00:00"
 
-tell application "Mail"
-    move msg to mailbox "Postponi" of account of mailbox of msg
-end tell
+if accName is "Bluecube" then
+	do shell script "/usr/bin/curl -s -X POST https://mail.srvc.es/gmail/move -H 'Content-Type: application/json' -d '{\"email\": \"f.lodi@bluecube.it\", \"message_id\": \"" & msgID & "\", \"target_folder\": \"Postponi\"}'"
+else
+	tell application "Mail"
+		try
+			move msg to mailbox "Postponi" of acc
+			check for new mail for acc
+		on error
+			display notification "Cartella Postponi non trovata per questo account" with title "Postponi"
+			return
+		end try
+	end tell
+end if
 
-do shell script "curl -s -X POST " & API_BASE & "/postpone -H 'Content-Type: application/json' -d '{\"message_url\": \"message://%3C" & msgID & "%3E\", \"target_dt\": \"" & targetDT & "\", \"account\": \"" & msgAccount & "\"}' > /tmp/postponi_curl.log 2>&1 &"
+do shell script "/usr/bin/curl -s -X POST https://mail.srvc.es/postpone -H 'Content-Type: application/json' -d '{\"message_url\": \"message://%3C" & msgID & "%3E\", \"target_dt\": \"" & targetDT & "\", \"account\": \"" & msgAccount & "\"}' > /tmp/postponi_curl.log 2>&1 &"

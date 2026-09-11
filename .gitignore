@@ -8,3 +8,4 @@ google_credentials.json
 __pycache__/
 *.pyc
 .env
+.claude/settings.local.json
