@@ -23,9 +23,15 @@ Repo: `github.com/flodi/mail-tools` (**pubblico**: niente password, token o `con
 | Archivia | ⌘↩ | Menu Messaggio → Archivia |
 | Auto read | ogni 60 s | Segna come lette le mail in Junk/Trash/Archive |
 
-**La fonte di verità sono le macro installate in KM**, non i file del repo. Si sincronizzano fra
-fAir e fWork tramite il file `~/Documents/Resources/Keyboard Maestro Macros.kmsync`.
+**La fonte di verità sono le macro installate in KM**, non i file del repo.
 Dopo una modifica nell'editor KM: `python3 keyboard-maestro/export.py` e commit.
+
+I due Mac **non condividono le macro** (verificato il 2026-09-12): il file di sync di KM
+(Preferenze → Sync Macros) è `~/Documents/Apps/Keyboard Maestro Macros.kmsync` su fAir e
+`~/Documents/Resources/Keyboard Maestro Macros.kmsync` su fWork, e i due insiemi sono divergenti —
+solo su fAir stanno il gruppo VPN, le due macro SpamSieve nel gruppo Mail e "Connect fWork".
+Una modifica va quindi replicata a mano su entrambe le macchine, o si unifica il file di sync.
+L'export nel repo viene da fWork.
 
 Per modificare una macro da riga di comando senza passare dall'editor:
 ```bash
